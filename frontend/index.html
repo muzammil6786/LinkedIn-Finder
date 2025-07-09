@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Find LinkedIn Profiles by Email</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #0073b1;
+            margin-bottom: 0.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 1rem;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border-color: #0073b1;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 1rem;
+            padding: 12px;
+            font-size: 16px;
+            background: #0073b1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #005580;
+        }
+
+        .note {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .result {
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .profile {
+            background: #f4f4f4;
+            border-left: 4px solid #0073b1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile a {
+            text-decoration: none;
+            color: #0073b1;
+            font-weight: 600;
+        }
+
+        .loading {
+            margin-top: 1rem;
+            color: #0073b1;
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔍 LinkedIn Finder</h1>
+        <p>Enter a professional email address below</p>
+
+        <input type="email" id="email" placeholder="e.g. user@company.com"
+            onkeydown="if (event.key === 'Enter') searchLinkedIn()" />
+
+        <button onclick="searchLinkedIn()">Search</button>
+
+        <p class="note">⚠️ Gmail or personal emails may not return results</p>
+
+        <div class="loading" id="loading" style="display: none;">Searching...</div>
+        <div class="error" id="error"></div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        async function searchLinkedIn() {
+            const email = document.getElementById('email').value.trim();
+            const resultDiv = document.getElementById('result');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+
+            resultDiv.innerHTML = '';
+            error.textContent = '';
+            loading.style.display = 'block';
+
+            if (!email) {
+                error.textContent = 'Please enter an email address';
+                loading.style.display = 'none';
+                return;
+            }
+
+            try {
+                const res = await fetch(`http://localhost:3000/search?q=${encodeURIComponent(email)}`);
+                const data = await res.json();
+                loading.style.display = 'none';
+
+                if (data.linkedin && data.linkedin.length > 0) {
+                    resultDiv.innerHTML = `<h3>Found ${data.linkedin.length} profile(s):</h3>`;
+                    data.linkedin.forEach((item) => {
+                        resultDiv.innerHTML += `
+              <div class="profile">
+                ${item.profileImage ? `<img src="${item.profileImage}" alt="Profile">` : '<img src="https://via.placeholder.com/50" alt="N/A">'}
+                <a href="${item.url}" target="_blank">${item.title || 'LinkedIn Profile'}</a>
+              </div>
+            `;
+                    });
+                } else {
+                    resultDiv.innerHTML = `<p>No LinkedIn profiles found for <strong>${email}</strong>.</p>`;
+                }
+            } catch (err) {
+                loading.style.display = 'none';
+                error.textContent = 'Error fetching data. Please try again later.';
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+
+</html>
