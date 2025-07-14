@@ -1,0 +1,353 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+/* Container */
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 550px;
+    text-align: center;
+}
+
+/* Headings */
+h1 {
+    color: #0073b1;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+/* Input Field */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 1rem;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+input:focus {
+    border-color: #0073b1;
+    box-shadow: 0 0 0 4px rgba(0, 115, 177, 0.1);
+}
+
+/* Button */
+button,
+.glow-button {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 14px 18px;
+    font-size: 16px;
+    background: linear-gradient(90deg, #0073b1, #005580);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 115, 177, 0.3);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.glow-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+    transform: skewX(-45deg);
+    transition: all 0.5s ease-in-out;
+    z-index: 0;
+}
+
+.glow-button:hover::before {
+    left: 100%;
+}
+
+.glow-button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 115, 177, 0.4);
+}
+
+/* Tagline & Highlight */
+.tagline {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    margin-top: 0.5rem;
+}
+
+.highlight-text {
+    font-size: 1rem;
+    margin: 0.5rem 0 1rem;
+    color: #444;
+}
+
+/* Keyword Highlight */
+.connect-keyword {
+    display: inline-block;
+    font-weight: 650;
+    color: #ffffff;
+    background: linear-gradient(90deg, #0073b1, #00bcd4);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-shadow: 0 3px 6px rgba(0, 115, 177, 0.2);
+    animation: popUp 1s ease-in-out;
+    transform: scale(1.02);
+    transition: transform 0.3s ease-in-out;
+}
+
+.connect-keyword:hover {
+    transform: scale(1.04);
+    background: linear-gradient(90deg, #00bcd4, #0073b1);
+}
+
+/* Supporting Text */
+.note {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.loading {
+    margin-top: 1rem;
+    color: #0073b1;
+    font-weight: bold;
+}
+
+.error {
+    color: red;
+    margin-top: 1rem;
+}
+
+/* Results */
+.result {
+    margin-top: 2rem;
+    text-align: left;
+}
+
+.profile {
+    background: #f4f4f4;
+    border-left: 4px solid #0073b1;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.profile-content {
+    flex: 1;
+}
+
+.profile a {
+    text-decoration: none;
+    color: #0073b1;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.profile p {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: #444;
+}
+
+.connect-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: #0073b1;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.connect-btn:hover {
+    background: #005580;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    background: #0073b1;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    gap: 10px;
+}
+
+.nav-brand img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+}
+
+/* Push main content below navbar */
+main.container {
+    margin-top: 4.5rem;
+}
+
+/* Footer */
+.footer {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
+    background: #f5f5f5;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.footer .social-links {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.footer .social-links a img {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.footer .social-links a:hover img {
+    transform: scale(1.2);
+}
+
+/* Animations */
+@keyframes popUp {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+}
+
+/* Responsive Layout */
+
+/* Mobile */
+@media (max-width: 599px) {
+    .container {
+        padding: 1.5rem;
+        max-width: 95%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .highlight-text {
+        font-size: 0.95rem;
+    }
+
+    .connect-keyword {
+        font-size: 0.95rem;
+        padding: 5px 8px;
+    }
+
+    .glow-button {
+        padding: 12px;
+        font-size: 15px;
+    }
+
+    .profile img {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 600px) and (max-width: 1024px) {
+    .container {
+        padding: 2.5rem;
+        max-width: 700px;
+    }
+
+    h1 {
+        font-size: clamp(1.5rem, 2.5vw, 2rem);
+    }
+
+    .profile img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .profile p {
+        font-size: 15px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    .container {
+        padding: 3rem 4rem;
+        max-width: 800px;
+    }
+
+    h1 {
+        font-size: clamp(2rem, 3vw, 2.5rem);
+    }
+
+    .profile a {
+        font-size: 18px;
+    }
+
+    .profile p {
+        font-size: 16px;
+    }
+}
