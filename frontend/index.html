@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <title>Find LinkedIn Profiles by Email</title>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"
+        type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -11,11 +13,20 @@
             padding: 0;
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 2rem 1rem;
         }
+
+
 
         .container {
             background: white;
@@ -23,7 +34,7 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             text-align: center;
         }
 
@@ -82,7 +93,7 @@
             border-radius: 8px;
             margin-bottom: 1rem;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 15px;
         }
 
@@ -91,12 +102,24 @@
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .profile-content {
+            flex: 1;
         }
 
         .profile a {
             text-decoration: none;
             color: #0073b1;
             font-weight: 600;
+            font-size: 16px;
+        }
+
+        .profile p {
+            margin: 6px 0 0;
+            font-size: 14px;
+            color: #444;
         }
 
         .loading {
@@ -109,25 +132,153 @@
             color: red;
             margin-top: 1rem;
         }
+
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            background: #0073b1;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            gap: 10px;
+        }
+
+        .nav-brand img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+        }
+
+        /* Push main content down due to fixed navbar */
+        main.container {
+            margin-top: 4.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            width: 100%;
+            text-align: center;
+            padding: 1rem 0;
+            background: #f5f5f5;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .footer .social-links {
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .footer .social-links a img {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .footer .social-links a:hover img {
+            transform: scale(1.2);
+        }
+
+
+
+        /* Tablet styles */
+        @media (min-width: 600px) and (max-width: 1024px) {
+            .container {
+                padding: 2.5rem;
+                max-width: 700px;
+            }
+
+            h1 {
+                font-size: clamp(1.5rem, 2.5vw, 2rem);
+            }
+
+            .profile img {
+                width: 60px;
+                height: 60px;
+            }
+
+            .profile p {
+                font-size: 15px;
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1025px) {
+            .container {
+                padding: 3rem 4rem;
+                max-width: 800px;
+            }
+
+            h1 {
+                font-size: clamp(2rem, 3vw, 2.5rem);
+            }
+
+            .profile a {
+                font-size: 18px;
+            }
+
+            .profile p {
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>🔍 LinkedIn Finder</h1>
-        <p>Enter a professional email address below</p>
 
-        <input type="email" id="email" placeholder="e.g. user@company.com"
-            onkeydown="if (event.key === 'Enter') searchLinkedIn()" />
+    <header class="navbar">
+        <div class="nav-brand">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="Logo">
+            <span>LinkedIn Finder</span>
+        </div>
+    </header>
 
-        <button onclick="searchLinkedIn()">Search</button>
+    <main>
+        <div class="container">
+            <h1>🔍 LinkedIn Finder</h1>
+            <p>Enter a professional email address below</p>
 
-        <p class="note">⚠️ Gmail or personal emails may not return results</p>
+            <input type="email" id="email" placeholder="e.g. user@company.com"
+                onkeydown="if (event.key === 'Enter') searchLinkedIn()" />
 
-        <div class="loading" id="loading" style="display: none;">Searching...</div>
-        <div class="error" id="error"></div>
-        <div class="result" id="result"></div>
-    </div>
+            <button onclick="searchLinkedIn()">Search</button>
+
+            <p class="note">⚠️ Gmail or personal emails may not return results</p>
+
+            <div class="loading" id="loading" style="display: none;">Searching...</div>
+            <div class="error" id="error"></div>
+            <div class="result" id="result"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Made with ❤️ by Muzammil • © 2025</p>
+        <div class="social-links">
+            <a href="https://github.com/muzammil6786" target="_blank" aria-label="GitHub">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" />
+            </a>
+            <a href="https://www.linkedin.com/in/muzammil-raza-khan-524ba71a0/" target="_blank" aria-label="LinkedIn">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg"
+                    alt="LinkedIn" />
+            </a>
+        </div>
+    </footer>
+
 
     <script>
         async function searchLinkedIn() {
@@ -147,7 +298,7 @@
             }
 
             try {
-                const res = await fetch(`https://linkedin-finder-1.onrender.com/search?q=${encodeURIComponent(email)}`);
+                const res = await fetch(`http://localhost:3000/search?q=${encodeURIComponent(email)}`);
                 const data = await res.json();
                 loading.style.display = 'none';
 
@@ -156,8 +307,11 @@
                     data.linkedin.forEach((item) => {
                         resultDiv.innerHTML += `
               <div class="profile">
-                ${item.profileImage ? `<img src="${item.profileImage}" alt="Profile">` : '<img src="https://via.placeholder.com/50" alt="N/A">'}
-                <a href="${item.url}" target="_blank">${item.title || 'LinkedIn Profile'}</a>
+                <img src="${item.profileImage || 'https://via.placeholder.com/50'}" alt="Profile">
+                <div class="profile-content">
+                  <a href="${item.url}" target="_blank">${item.title || 'LinkedIn Profile'}</a>
+                  <p>${item.description || 'No description available.'}</p>
+                </div>
               </div>
             `;
                     });

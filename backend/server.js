@@ -2,66 +2,75 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-
+const { connectToMongo, getCachedResult, cacheResult } = require('./cache');
+const getNextApiKey = require('./rotateKeys');
 
 const app = express();
 app.use(cors());
 const PORT = 3000;
-
-const API_KEY = process.env.Api_Key;
-const CX_ID = process.env.searchEngineId;
+const CX_ID = process.env.CX_ID;
 
 app.get('/search', async (req, res) => {
-    const email = req.query.q;
-    if (!email) {
-        return res.status(400).json({ error: 'Missing query param ?q=email@example.com' });
+    const query = req.query.q;
+    if (!query) return res.status(400).json({ error: 'Missing ?q= parameter' });
+
+    const cached = await getCachedResult(query);
+    if (cached) {
+        console.log('🟢 Serving from cache');
+        return res.json(cached);
     }
 
-    const query = email;
-    const result = {
-        email,
-        message: 'No results found',
-        linkedin: []
-    };
+    const apiKey = getNextApiKey();
+    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${CX_ID}&q=${encodeURIComponent(query)}`;
 
     try {
-        for (let start = 1; start <= 30 && result.linkedin.length < 3; start += 10) {
-            const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX_ID}&q=${encodeURIComponent(query)}&start=${start}`;
-            const response = await axios.get(url);
-            const items = response.data.items || [];
+        const response = await axios.get(url);
+        const items = response.data.items || [];
 
-            for (const item of items) {
-                const link = item.link.toLowerCase();
-                if (link.includes('linkedin.com/in')) {
-                    const metatags = item.pagemap?.metatags?.[0] || {};
-                    const image =
-                        metatags['og:image'] ||
-                        metatags['twitter:image'] ||
-                        item.pagemap?.cse_image?.[0]?.src ||
-                        null;
+        const linkedinLinks = items
+            .filter(item => item.link.toLowerCase().includes('linkedin.com/in'))
+            .map(item => {
+                const metatags = item.pagemap?.metatags?.[0] || {};
 
-                    result.linkedin.push({
-                        url: item.link,
-                        title: item.title,
-                        profileImage: image
-                    });
+                const image =
+                    metatags['og:image'] ||
+                    metatags['twitter:image'] ||
+                    item.pagemap?.cse_image?.[0]?.src ||
+                    'https://via.placeholder.com/50';
 
-                    if (result.linkedin.length === 3) break;
-                }
-            }
-        }
+                const description =
+                    metatags['og:description'] ||
+                    metatags['twitter:description'] ||
+                    item.snippet ||
+                    'No description available.';
 
-        if (result.linkedin.length > 0) {
-            result.message = 'Success';
-        }
+                return {
+                    url: item.link,
+                    title: item.title || 'LinkedIn Profile',
+                    profileImage: image,
+                    description: description
+                };
+            })
+            .slice(0, 3);
 
-        return res.json(result);
-    } catch (error) {
-        console.error(' Error:', error.message);
-        res.status(500).json({ error: 'Failed to fetch from Google', detail: error.message });
+
+        const result = {
+            query,
+            message: linkedinLinks.length ? 'Success' : 'No results',
+            linkedin: linkedinLinks
+        };
+
+        await cacheResult(query, result);
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: 'Google API failed', detail: err.message });
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-});
+
+(async () => {
+    await connectToMongo(process.env.MONGO_URI);
+    app.listen(PORT, () => {
+        console.log(`Backend running at http://localhost:${PORT}`);
+    });
+})();
